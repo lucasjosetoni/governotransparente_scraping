@@ -10,3 +10,23 @@ GET /app/portal/api/v1/json/despesa/consolidada/empenho/03769490?ano=3&limit=-1&
 
 
 docker compose up
+docker compose down -v
+docker compose up -d
+
+python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+
+
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/dags/rasper_json_dag.py
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/dags/popula_banco.py
+
+
+
+docker exec -it $(docker ps -qf "name=airflow-worker|airflow-scheduler" | head -n 1) \
+airflow connections add 'postgres_transparencia' \
+    --conn-type 'postgres' \
+    --conn-login 'airflow' \
+    --conn-password 'airflow' \
+    --conn-host 'postgres' \
+    --conn-port '5432' \
+    --conn-schema 'transparencia'

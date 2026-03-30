@@ -1,0 +1,21 @@
+[2026-03-30T17:40:19.314+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023 permission to 509
+[2026-03-30T17:40:19.314+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023 permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023'
+[2026-03-30T17:40:19.346+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023 permission to 509
+[2026-03-30T17:40:19.347+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023 permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023'
+[2026-03-30T17:40:19.377+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: extracao_transparencia.extrair_01_01_2023 manual__2026-03-30T17:40:17.340345+00:00 [queued]>
+[2026-03-30T17:40:19.384+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: extracao_transparencia.extrair_01_01_2023 manual__2026-03-30T17:40:17.340345+00:00 [queued]>
+[2026-03-30T17:40:19.385+0000] {taskinstance.py:1359} INFO - Starting attempt 1 of 2
+[2026-03-30T17:40:19.397+0000] {taskinstance.py:1380} INFO - Executing <Task(PythonOperator): extrair_01_01_2023> on 2026-03-30 17:40:17.340345+00:00
+[2026-03-30T17:40:19.403+0000] {standard_task_runner.py:57} INFO - Started process 277 to run task
+[2026-03-30T17:40:19.408+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'extracao_transparencia', 'extrair_01_01_2023', 'manual__2026-03-30T17:40:17.340345+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/rasper_json_dag.py', '--cfg-path', '/tmp/tmpns_3i_d3']
+[2026-03-30T17:40:19.411+0000] {standard_task_runner.py:85} INFO - Job 2: Subtask extrair_01_01_2023
+[2026-03-30T17:40:19.458+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023 permission to 509
+[2026-03-30T17:40:19.458+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023 permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=extracao_transparencia/run_id=manual__2026-03-30T17:40:17.340345+00:00/task_id=extrair_01_01_2023'
+[2026-03-30T17:40:19.460+0000] {task_command.py:415} INFO - Running <TaskInstance: extracao_transparencia.extrair_01_01_2023 manual__2026-03-30T17:40:17.340345+00:00 [running]> on host 7df089d6b2ce
+[2026-03-30T17:40:19.543+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='Lucas Toni' AIRFLOW_CTX_DAG_ID='extracao_transparencia' AIRFLOW_CTX_TASK_ID='extrair_01_01_2023' AIRFLOW_CTX_EXECUTION_DATE='2026-03-30T17:40:17.340345+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-30T17:40:17.340345+00:00'
+[2026-03-30T17:40:19.545+0000] {logging_mixin.py:151} INFO - 📥 Extraindo: Ano ID 3 [01/01/2023 a 31/12/2023]
+[2026-03-30T17:40:32.082+0000] {logging_mixin.py:151} INFO - ✅ Arquivo salvo em: /opt/***/data/raw_empenhos_01-01-2023.json (16436 registros)
+[2026-03-30T17:40:32.094+0000] {python.py:194} INFO - Done. Returned value was: None
+[2026-03-30T17:40:32.104+0000] {taskinstance.py:1398} INFO - Marking task as SUCCESS. dag_id=extracao_transparencia, task_id=extrair_01_01_2023, execution_date=20260330T174017, start_date=20260330T174019, end_date=20260330T174032
+[2026-03-30T17:40:32.153+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2026-03-30T17:40:32.168+0000] {taskinstance.py:2776} INFO - 0 downstream tasks scheduled from follow-on schedule check

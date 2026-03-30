@@ -1,0 +1,113 @@
+[2026-03-30T18:00:07.095+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:00:07.095+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:00:07.118+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:00:07.119+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:00:07.265+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_empenhos.processar_json_para_postgres manual__2026-03-30T18:00:03.985315+00:00 [queued]>
+[2026-03-30T18:00:07.272+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_empenhos.processar_json_para_postgres manual__2026-03-30T18:00:03.985315+00:00 [queued]>
+[2026-03-30T18:00:07.272+0000] {taskinstance.py:1359} INFO - Starting attempt 1 of 1
+[2026-03-30T18:00:07.283+0000] {taskinstance.py:1380} INFO - Executing <Task(PythonOperator): processar_json_para_postgres> on 2026-03-30 18:00:03.985315+00:00
+[2026-03-30T18:00:07.289+0000] {standard_task_runner.py:57} INFO - Started process 794 to run task
+[2026-03-30T18:00:07.291+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'etl_empenhos', 'processar_json_para_postgres', 'manual__2026-03-30T18:00:03.985315+00:00', '--job-id', '7', '--raw', '--subdir', 'DAGS_FOLDER/popula_banco.py', '--cfg-path', '/tmp/tmpz34dm_im']
+[2026-03-30T18:00:07.294+0000] {standard_task_runner.py:85} INFO - Job 7: Subtask processar_json_para_postgres
+[2026-03-30T18:00:07.337+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:00:07.337+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:00:03.985315+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:00:07.338+0000] {task_command.py:415} INFO - Running <TaskInstance: etl_empenhos.processar_json_para_postgres manual__2026-03-30T18:00:03.985315+00:00 [running]> on host 7df089d6b2ce
+[2026-03-30T18:00:07.413+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_empenhos' AIRFLOW_CTX_TASK_ID='processar_json_para_postgres' AIRFLOW_CTX_EXECUTION_DATE='2026-03-30T18:00:03.985315+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-30T18:00:03.985315+00:00'
+[2026-03-30T18:00:07.414+0000] {logging_mixin.py:151} INFO - 🚀 Iniciando processamento ETL...
+[2026-03-30T18:00:07.416+0000] {logging_mixin.py:151} INFO - 
+📂 Lendo arquivo: /opt/***/data/raw_empenhos_01-01-2023_30-03-2023.json
+[2026-03-30T18:00:07.522+0000] {logging_mixin.py:151} INFO - 📊 Total de registros no JSON: 16436
+[2026-03-30T18:00:07.552+0000] {logging_mixin.py:151} INFO - 🔄 DataFrame criado com 16436 registros
+[2026-03-30T18:00:07.552+0000] {logging_mixin.py:151} INFO - 🧾 Colunas: ['empenhado', 'idEmpenho', 'liquidado', 'gasto', 'empenho', 'orgao', 'fornecedor', 'data', 'historico', 'dataDesc', 'empenhadoDesc', 'liquidadoDesc', 'gastoDesc']
+[2026-03-30T18:00:07.688+0000] {logging_mixin.py:151} INFO - 🔍 Amostra dos dados processados:
+[2026-03-30T18:00:07.707+0000] {logging_mixin.py:151} INFO -     empenhado  id_empenho   liquidado  ...  liquidadoDesc     gastoDesc    data_iso
+0    82645.29       73623    82645.29  ...      82.645,29     82.645,29  2023-01-02
+1   156400.00       74623   156400.00  ...     156.400,00    156.400,00  2023-01-10
+2  3360805.80       74723  3360805.80  ...   3.360.805,80  3.360.805,80  2023-01-10
+
+[3 rows x 14 columns]
+[2026-03-30T18:00:07.862+0000] {taskinstance.py:1935} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.SyntaxError: syntax error at or near ":"
+LINE 8:             md5(concat(COALESCE(:liquidado::text, ''), COALE...
+                                        ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/popula_banco.py", line 90, in processar_json_para_postgres
+    result = conn.execute(query, params)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1385, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.SyntaxError) syntax error at or near ":"
+LINE 8:             md5(concat(COALESCE(:liquidado::text, ''), COALE...
+                                        ^
+
+[SQL: 
+        INSERT INTO empenhos (
+            id_empenho, num_empenho, orgao, fornecedor, data_iso, 
+            historico, empenhado, liquidado, gasto, row_hash
+        ) VALUES (
+            %(id_empenho)s, %(num_empenho)s, %(orgao)s, %(fornecedor)s, %(data_iso)s, 
+            %(historico)s, %(empenhado)s, %(liquidado)s, %(gasto)s,
+            md5(concat(COALESCE(:liquidado::text, ''), COALESCE(:gasto::text, ''), COALESCE(%(historico)s, ''), COALESCE(%(orgao)s, '')))
+        )
+        ON CONFLICT (id_empenho) DO UPDATE SET
+            liquidado = EXCLUDED.liquidado,
+            gasto = EXCLUDED.gasto,
+            historico = EXCLUDED.historico,
+            row_hash = EXCLUDED.row_hash,
+            data_versao = NOW()
+        WHERE empenhos.row_hash IS DISTINCT FROM EXCLUDED.row_hash;
+    ]
+[parameters: {'id_empenho': 73623, 'num_empenho': '02010002', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CAIXA ECONÔMICA FEDERAL', 'data_iso': datetime.date(2023, 1, 2), 'historico': 'TARIFAS BANCÁRIAS CAIXA ECONOMICA', 'empenhado': 82645.29, 'liquidado': 82645.29, 'gasto': 82645.29}]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2026-03-30T18:00:07.876+0000] {taskinstance.py:1398} INFO - Marking task as FAILED. dag_id=etl_empenhos, task_id=processar_json_para_postgres, execution_date=20260330T180003, start_date=20260330T180007, end_date=20260330T180007
+[2026-03-30T18:00:07.887+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 7 for task processar_json_para_postgres ((psycopg2.errors.SyntaxError) syntax error at or near ":"
+LINE 8:             md5(concat(COALESCE(:liquidado::text, ''), COALE...
+                                        ^
+
+[SQL: 
+        INSERT INTO empenhos (
+            id_empenho, num_empenho, orgao, fornecedor, data_iso, 
+            historico, empenhado, liquidado, gasto, row_hash
+        ) VALUES (
+            %(id_empenho)s, %(num_empenho)s, %(orgao)s, %(fornecedor)s, %(data_iso)s, 
+            %(historico)s, %(empenhado)s, %(liquidado)s, %(gasto)s,
+            md5(concat(COALESCE(:liquidado::text, ''), COALESCE(:gasto::text, ''), COALESCE(%(historico)s, ''), COALESCE(%(orgao)s, '')))
+        )
+        ON CONFLICT (id_empenho) DO UPDATE SET
+            liquidado = EXCLUDED.liquidado,
+            gasto = EXCLUDED.gasto,
+            historico = EXCLUDED.historico,
+            row_hash = EXCLUDED.row_hash,
+            data_versao = NOW()
+        WHERE empenhos.row_hash IS DISTINCT FROM EXCLUDED.row_hash;
+    ]
+[parameters: {'id_empenho': 73623, 'num_empenho': '02010002', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CAIXA ECONÔMICA FEDERAL', 'data_iso': datetime.date(2023, 1, 2), 'historico': 'TARIFAS BANCÁRIAS CAIXA ECONOMICA', 'empenhado': 82645.29, 'liquidado': 82645.29, 'gasto': 82645.29}]
+(Background on this error at: https://sqlalche.me/e/14/f405); 794)
+[2026-03-30T18:00:07.909+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2026-03-30T18:00:07.930+0000] {taskinstance.py:2776} INFO - 0 downstream tasks scheduled from follow-on schedule check

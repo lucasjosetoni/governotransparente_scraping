@@ -1,0 +1,110 @@
+[2026-03-30T18:01:39.917+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:01:39.917+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:01:39.942+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:01:39.943+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:01:40.088+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_empenhos.processar_json_para_postgres manual__2026-03-30T18:01:36.167007+00:00 [queued]>
+[2026-03-30T18:01:40.095+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_empenhos.processar_json_para_postgres manual__2026-03-30T18:01:36.167007+00:00 [queued]>
+[2026-03-30T18:01:40.095+0000] {taskinstance.py:1359} INFO - Starting attempt 1 of 1
+[2026-03-30T18:01:40.107+0000] {taskinstance.py:1380} INFO - Executing <Task(PythonOperator): processar_json_para_postgres> on 2026-03-30 18:01:36.167007+00:00
+[2026-03-30T18:01:40.113+0000] {standard_task_runner.py:57} INFO - Started process 839 to run task
+[2026-03-30T18:01:40.116+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'etl_empenhos', 'processar_json_para_postgres', 'manual__2026-03-30T18:01:36.167007+00:00', '--job-id', '9', '--raw', '--subdir', 'DAGS_FOLDER/popula_banco.py', '--cfg-path', '/tmp/tmpkt9lm19x']
+[2026-03-30T18:01:40.119+0000] {standard_task_runner.py:85} INFO - Job 9: Subtask processar_json_para_postgres
+[2026-03-30T18:01:40.167+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:01:40.167+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos/run_id=manual__2026-03-30T18:01:36.167007+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:01:40.169+0000] {task_command.py:415} INFO - Running <TaskInstance: etl_empenhos.processar_json_para_postgres manual__2026-03-30T18:01:36.167007+00:00 [running]> on host 7df089d6b2ce
+[2026-03-30T18:01:40.242+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_empenhos' AIRFLOW_CTX_TASK_ID='processar_json_para_postgres' AIRFLOW_CTX_EXECUTION_DATE='2026-03-30T18:01:36.167007+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-30T18:01:36.167007+00:00'
+[2026-03-30T18:01:40.244+0000] {logging_mixin.py:151} INFO - 🚀 Iniciando ETL...
+[2026-03-30T18:01:40.246+0000] {logging_mixin.py:151} INFO - 
+📂 Processando arquivo: /opt/***/data/raw_empenhos_01-01-2023_30-03-2023.json
+[2026-03-30T18:01:40.353+0000] {logging_mixin.py:151} INFO - 📊 Registros no JSON: 16436
+[2026-03-30T18:01:40.570+0000] {logging_mixin.py:151} INFO - 🔍 Amostra:
+[2026-03-30T18:01:40.587+0000] {logging_mixin.py:151} INFO -     empenhado  id_empenho   liquidado  ...  liquidadoDesc     gastoDesc    data_iso
+0    82645.29       73623    82645.29  ...      82.645,29     82.645,29  2023-01-02
+1   156400.00       74623   156400.00  ...     156.400,00    156.400,00  2023-01-10
+2  3360805.80       74723  3360805.80  ...   3.360.805,80  3.360.805,80  2023-01-10
+
+[3 rows x 14 columns]
+[2026-03-30T18:01:40.786+0000] {logging_mixin.py:151} INFO - ⚙️ Iniciando carga no banco...
+[2026-03-30T18:01:40.947+0000] {taskinstance.py:1935} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1890, in _execute_context
+    self.dialect.do_executemany(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 1000, in do_executemany
+    cursor.executemany(statement, parameters)
+psycopg2.errors.UndefinedTable: relation "empenhos" does not exist
+LINE 2:         INSERT INTO empenhos (
+                            ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/popula_banco.py", line 87, in processar_json_para_postgres
+    result = conn.execute(query, registros)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1385, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1890, in _execute_context
+    self.dialect.do_executemany(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 1000, in do_executemany
+    cursor.executemany(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedTable) relation "empenhos" does not exist
+LINE 2:         INSERT INTO empenhos (
+                            ^
+
+[SQL: 
+        INSERT INTO empenhos (
+            id_empenho, num_empenho, orgao, fornecedor, data_iso,
+            historico, empenhado, liquidado, gasto, row_hash
+        ) VALUES (
+            %(id_empenho)s, %(num_empenho)s, %(orgao)s, %(fornecedor)s, %(data_iso)s,
+            %(historico)s, %(empenhado)s, %(liquidado)s, %(gasto)s, %(row_hash)s
+        )
+        ON CONFLICT (id_empenho) DO UPDATE SET
+            liquidado = EXCLUDED.liquidado,
+            gasto = EXCLUDED.gasto,
+            historico = EXCLUDED.historico,
+            row_hash = EXCLUDED.row_hash,
+            data_versao = NOW()
+        WHERE empenhos.row_hash IS DISTINCT FROM EXCLUDED.row_hash;
+    ]
+[parameters: ({'id_empenho': 73623, 'num_empenho': '02010002', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CAIXA ECONÔMICA FEDERAL', 'data_iso': datetime.date(2023, 1, 2), 'historico': 'TARIFAS BANCÁRIAS CAIXA ECONOMICA', 'empenhado': 82645.29, 'liquidado': 82645.29, 'gasto': 82645.29, 'row_hash': '26e242d3032c9b06f6e6e800a5701fee'}, {'id_empenho': 74623, 'num_empenho': '10010002', 'orgao': 'Fundo Municipal de Saúde de Macapá', 'fornecedor': 'AJUDA DE CUSTO - MAIS MÉDICOS', 'data_iso': datetime.date(2023, 1, 10), 'historico': 'AJUDA DE CUSTO DOS PROFISSIONAIS MÉDICOS ATUANTES NA ESTRATEGIA SAÚDE DA FAMILIA REFERENTE AO PERIODO DE JANEIRO/2023 PERTENCENTES AOS PROGRAMAS MAIS MÉDICOS E MÉDICOS PELO BRASIL.', 'empenhado': 156400.0, 'liquidado': 156400.0, 'gasto': 156400.0, 'row_hash': 'd12642ef24a640d0c350958735653787'}, {'id_empenho': 74723, 'num_empenho': '10010003', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CIMENTOS DO NORTE COMÉRCIO E SERVIÇOS EI', 'data_iso': datetime.date(2023, 1, 10), 'historico': 'CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA EXECUÇÃO DE SERVIÇOS DE PAVIMENTAÇÃO ASFÁLTICA EM CONCRETO BETUMINOSO USINADO À QUENTE (CBUQ) PARA ATENDER AS DEMANDAS DA SEMOB. PREGÃO ELETRONICO Nº SRP-072/2022-SEGOV PMM.', 'empenhado': 3360805.8, 'liquidado': 3360805.8, 'gasto': 3360805.8, 'row_hash': '2485c56e326cf32d755a29df76195c86'}, {'id_empenho': 74823, 'num_empenho': '02010001', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'BANCO DO BRASIL S/A.', 'data_iso': datetime.date(2023, 1, 2), 'historico': 'TARIFAS BANCÁRIAS REFERENTE AO EXERCÍCIO 2023', 'empenhado': 299919.5, 'liquidado': 299919.5, 'gasto': 299919.5, 'row_hash': 'd22c2e066603d905939f8fd4e97a016c'}, {'id_empenho': 75423, 'num_empenho': '16010001', 'orgao': 'Plano Financeiro', 'fornecedor': 'TRIBUNAL DE JUSTIÇA DO AMAPA', 'data_iso': datetime.date(2023, 1, 16), 'historico': 'PAGAMENTO DE SENTENÇA JUDICIAL.', 'empenhado': 7625.71, 'liquidado': 7625.71, 'gasto': 7625.71, 'row_hash': '4f3d956e9fb927e73ecf6b9c5964fecb'}, {'id_empenho': 75623, 'num_empenho': '17010001', 'orgao': 'Fundo Mun. de Assistência Social', 'fornecedor': 'DELEGACIA DA RECEITA FEDERAL EM MACAPÁ', 'data_iso': datetime.date(2023, 1, 17), 'historico': 'PAGAMENTO DA PAC. 625401166 PERT (FMAS) - PARCELA 64/120.', 'empenhado': 8717.71, 'liquidado': 8717.71, 'gasto': 8717.71, 'row_hash': '4278cbf26893f518550dd0fbf297950e'}, {'id_empenho': 75723, 'num_empenho': '17010002', 'orgao': 'Fundo Mun. de Assistência Social', 'fornecedor': 'DELEGACIA DA RECEITA FEDERAL EM MACAPÁ', 'data_iso': datetime.date(2023, 1, 17), 'historico': 'pagamento da parc. 625401166 PERT (SEMAST) - Parcela 64/120', 'empenhado': 10206.98, 'liquidado': 10206.98, 'gasto': 10206.98, 'row_hash': '4a94e74e5c3d1bec676bbd5105864adf'}, {'id_empenho': 75823, 'num_empenho': '06010001', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CAROLINE DE CASSIA CONCEIÇÃO DE ALMEIDA', 'data_iso': datetime.date(2023, 1, 6), 'historico': 'diária da servidora Caroline de Cassia Conceição de Almeida ref a viagem para acompanhhar o orçamento da metragem construção de uma passarela, na com ... (56 characters truncated) ... s dias 10 e 11 de janeiro de 2023. Como também, fazer a distribuição de roupas usadas para pessoas carentes, arrecadadas na campanha Natal Solidário.', 'empenhado': 600.0, 'liquidado': 600.0, 'gasto': 600.0, 'row_hash': '3f3a64056f6157653d89835d86677461'}  ... displaying 10 of 16436 total bound parameter sets ...  {'id_empenho': 2084023, 'num_empenho': '01120312', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'MINISTERIO DA DEFESA', 'data_iso': datetime.date(2023, 12, 1), 'historico': 'SALDO DE DEVOLUÇÃO CONVENIO 865236/2018', 'empenhado': 167984.02, 'liquidado': 167984.02, 'gasto': 167984.02, 'row_hash': '214dc68c67ca93fd06607e4a37a31280'}, {'id_empenho': 2089023, 'num_empenho': '01120004', 'orgao': 'Fundo Mun. de Assistência Social', 'fornecedor': 'L. S. ARAUJO JUNIOR - ME', 'data_iso': datetime.date(2023, 12, 1), 'historico': 'A CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA FORNECIMENTO DE BRINQUEDOS PARA O PROJETO UM DIA FELIZ PARA AS CRIANÇAS PARA ATENDER AS NECESSIDADES DO CREAS LIBERDADE. PROCESSO Nº 12.01.000.207/2023.', 'empenhado': 10994.9, 'liquidado': 0.0, 'gasto': 0.0, 'row_hash': '816064bc841a75f20cb2a846bfd0e944'})]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2026-03-30T18:01:40.961+0000] {taskinstance.py:1398} INFO - Marking task as FAILED. dag_id=etl_empenhos, task_id=processar_json_para_postgres, execution_date=20260330T180136, start_date=20260330T180140, end_date=20260330T180140
+[2026-03-30T18:01:40.982+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 9 for task processar_json_para_postgres ((psycopg2.errors.UndefinedTable) relation "empenhos" does not exist
+LINE 2:         INSERT INTO empenhos (
+                            ^
+
+[SQL: 
+        INSERT INTO empenhos (
+            id_empenho, num_empenho, orgao, fornecedor, data_iso,
+            historico, empenhado, liquidado, gasto, row_hash
+        ) VALUES (
+            %(id_empenho)s, %(num_empenho)s, %(orgao)s, %(fornecedor)s, %(data_iso)s,
+            %(historico)s, %(empenhado)s, %(liquidado)s, %(gasto)s, %(row_hash)s
+        )
+        ON CONFLICT (id_empenho) DO UPDATE SET
+            liquidado = EXCLUDED.liquidado,
+            gasto = EXCLUDED.gasto,
+            historico = EXCLUDED.historico,
+            row_hash = EXCLUDED.row_hash,
+            data_versao = NOW()
+        WHERE empenhos.row_hash IS DISTINCT FROM EXCLUDED.row_hash;
+    ]
+[parameters: ({'id_empenho': 73623, 'num_empenho': '02010002', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CAIXA ECONÔMICA FEDERAL', 'data_iso': datetime.date(2023, 1, 2), 'historico': 'TARIFAS BANCÁRIAS CAIXA ECONOMICA', 'empenhado': 82645.29, 'liquidado': 82645.29, 'gasto': 82645.29, 'row_hash': '26e242d3032c9b06f6e6e800a5701fee'}, {'id_empenho': 74623, 'num_empenho': '10010002', 'orgao': 'Fundo Municipal de Saúde de Macapá', 'fornecedor': 'AJUDA DE CUSTO - MAIS MÉDICOS', 'data_iso': datetime.date(2023, 1, 10), 'historico': 'AJUDA DE CUSTO DOS PROFISSIONAIS MÉDICOS ATUANTES NA ESTRATEGIA SAÚDE DA FAMILIA REFERENTE AO PERIODO DE JANEIRO/2023 PERTENCENTES AOS PROGRAMAS MAIS MÉDICOS E MÉDICOS PELO BRASIL.', 'empenhado': 156400.0, 'liquidado': 156400.0, 'gasto': 156400.0, 'row_hash': 'd12642ef24a640d0c350958735653787'}, {'id_empenho': 74723, 'num_empenho': '10010003', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CIMENTOS DO NORTE COMÉRCIO E SERVIÇOS EI', 'data_iso': datetime.date(2023, 1, 10), 'historico': 'CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA EXECUÇÃO DE SERVIÇOS DE PAVIMENTAÇÃO ASFÁLTICA EM CONCRETO BETUMINOSO USINADO À QUENTE (CBUQ) PARA ATENDER AS DEMANDAS DA SEMOB. PREGÃO ELETRONICO Nº SRP-072/2022-SEGOV PMM.', 'empenhado': 3360805.8, 'liquidado': 3360805.8, 'gasto': 3360805.8, 'row_hash': '2485c56e326cf32d755a29df76195c86'}, {'id_empenho': 74823, 'num_empenho': '02010001', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'BANCO DO BRASIL S/A.', 'data_iso': datetime.date(2023, 1, 2), 'historico': 'TARIFAS BANCÁRIAS REFERENTE AO EXERCÍCIO 2023', 'empenhado': 299919.5, 'liquidado': 299919.5, 'gasto': 299919.5, 'row_hash': 'd22c2e066603d905939f8fd4e97a016c'}, {'id_empenho': 75423, 'num_empenho': '16010001', 'orgao': 'Plano Financeiro', 'fornecedor': 'TRIBUNAL DE JUSTIÇA DO AMAPA', 'data_iso': datetime.date(2023, 1, 16), 'historico': 'PAGAMENTO DE SENTENÇA JUDICIAL.', 'empenhado': 7625.71, 'liquidado': 7625.71, 'gasto': 7625.71, 'row_hash': '4f3d956e9fb927e73ecf6b9c5964fecb'}, {'id_empenho': 75623, 'num_empenho': '17010001', 'orgao': 'Fundo Mun. de Assistência Social', 'fornecedor': 'DELEGACIA DA RECEITA FEDERAL EM MACAPÁ', 'data_iso': datetime.date(2023, 1, 17), 'historico': 'PAGAMENTO DA PAC. 625401166 PERT (FMAS) - PARCELA 64/120.', 'empenhado': 8717.71, 'liquidado': 8717.71, 'gasto': 8717.71, 'row_hash': '4278cbf26893f518550dd0fbf297950e'}, {'id_empenho': 75723, 'num_empenho': '17010002', 'orgao': 'Fundo Mun. de Assistência Social', 'fornecedor': 'DELEGACIA DA RECEITA FEDERAL EM MACAPÁ', 'data_iso': datetime.date(2023, 1, 17), 'historico': 'pagamento da parc. 625401166 PERT (SEMAST) - Parcela 64/120', 'empenhado': 10206.98, 'liquidado': 10206.98, 'gasto': 10206.98, 'row_hash': '4a94e74e5c3d1bec676bbd5105864adf'}, {'id_empenho': 75823, 'num_empenho': '06010001', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'CAROLINE DE CASSIA CONCEIÇÃO DE ALMEIDA', 'data_iso': datetime.date(2023, 1, 6), 'historico': 'diária da servidora Caroline de Cassia Conceição de Almeida ref a viagem para acompanhhar o orçamento da metragem construção de uma passarela, na com ... (56 characters truncated) ... s dias 10 e 11 de janeiro de 2023. Como também, fazer a distribuição de roupas usadas para pessoas carentes, arrecadadas na campanha Natal Solidário.', 'empenhado': 600.0, 'liquidado': 600.0, 'gasto': 600.0, 'row_hash': '3f3a64056f6157653d89835d86677461'}  ... displaying 10 of 16436 total bound parameter sets ...  {'id_empenho': 2084023, 'num_empenho': '01120312', 'orgao': 'Prefeitura Municipal de Macapá', 'fornecedor': 'MINISTERIO DA DEFESA', 'data_iso': datetime.date(2023, 12, 1), 'historico': 'SALDO DE DEVOLUÇÃO CONVENIO 865236/2018', 'empenhado': 167984.02, 'liquidado': 167984.02, 'gasto': 167984.02, 'row_hash': '214dc68c67ca93fd06607e4a37a31280'}, {'id_empenho': 2089023, 'num_empenho': '01120004', 'orgao': 'Fundo Mun. de Assistência Social', 'fornecedor': 'L. S. ARAUJO JUNIOR - ME', 'data_iso': datetime.date(2023, 12, 1), 'historico': 'A CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA FORNECIMENTO DE BRINQUEDOS PARA O PROJETO UM DIA FELIZ PARA AS CRIANÇAS PARA ATENDER AS NECESSIDADES DO CREAS LIBERDADE. PROCESSO Nº 12.01.000.207/2023.', 'empenhado': 10994.9, 'liquidado': 0.0, 'gasto': 0.0, 'row_hash': '816064bc841a75f20cb2a846bfd0e944'})]
+(Background on this error at: https://sqlalche.me/e/14/f405); 839)
+[2026-03-30T18:01:41.013+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2026-03-30T18:01:41.034+0000] {taskinstance.py:2776} INFO - 0 downstream tasks scheduled from follow-on schedule check

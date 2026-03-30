@@ -1,0 +1,95 @@
+[2026-03-30T18:18:35.810+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:18:35.810+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:18:35.834+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:18:35.835+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:18:35.985+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_empenhos_v3.processar_json_para_postgres scheduled__2026-03-29T00:00:00+00:00 [queued]>
+[2026-03-30T18:18:35.993+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_empenhos_v3.processar_json_para_postgres scheduled__2026-03-29T00:00:00+00:00 [queued]>
+[2026-03-30T18:18:35.993+0000] {taskinstance.py:1359} INFO - Starting attempt 1 of 1
+[2026-03-30T18:18:36.005+0000] {taskinstance.py:1380} INFO - Executing <Task(PythonOperator): processar_json_para_postgres> on 2026-03-29 00:00:00+00:00
+[2026-03-30T18:18:36.011+0000] {standard_task_runner.py:57} INFO - Started process 1281 to run task
+[2026-03-30T18:18:36.014+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'etl_empenhos_v3', 'processar_json_para_postgres', 'scheduled__2026-03-29T00:00:00+00:00', '--job-id', '17', '--raw', '--subdir', 'DAGS_FOLDER/popula_banco.py', '--cfg-path', '/tmp/tmp0tokh_1v']
+[2026-03-30T18:18:36.017+0000] {standard_task_runner.py:85} INFO - Job 17: Subtask processar_json_para_postgres
+[2026-03-30T18:18:36.065+0000] {logging_mixin.py:151} INFO - Changing /opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres permission to 509
+[2026-03-30T18:18:36.066+0000] {logging_mixin.py:151} INFO - Failed to change /opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres permission to 509: [Errno 1] Operation not permitted: '/opt/***/logs/dag_id=etl_empenhos_v3/run_id=scheduled__2026-03-29T00:00:00+00:00/task_id=processar_json_para_postgres'
+[2026-03-30T18:18:36.067+0000] {task_command.py:415} INFO - Running <TaskInstance: etl_empenhos_v3.processar_json_para_postgres scheduled__2026-03-29T00:00:00+00:00 [running]> on host 7df089d6b2ce
+[2026-03-30T18:18:36.140+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_empenhos_v3' AIRFLOW_CTX_TASK_ID='processar_json_para_postgres' AIRFLOW_CTX_EXECUTION_DATE='2026-03-29T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-03-29T00:00:00+00:00'
+[2026-03-30T18:18:36.141+0000] {logging_mixin.py:151} INFO - 🚀 Iniciando ETL de Alta Performance...
+[2026-03-30T18:18:36.155+0000] {base.py:73} INFO - Using connection ID 'postgres_transparencia' for task execution.
+[2026-03-30T18:18:36.157+0000] {logging_mixin.py:151} INFO - 📂 Processando: /opt/***/data/raw_empenhos_01-01-2023_30-03-2023.json
+[2026-03-30T18:18:37.190+0000] {taskinstance.py:1935} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.SyntaxError: INSERT has more expressions than target columns
+LINE 6:                 SELECT * FROM temp_empenhos
+                               ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/popula_banco.py", line 107, in processar_json_para_postgres
+    res = conn.execute(query)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1385, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1910, in _execute_context
+    self.dialect.do_execute(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.SyntaxError) INSERT has more expressions than target columns
+LINE 6:                 SELECT * FROM temp_empenhos
+                               ^
+
+[SQL: 
+                INSERT INTO empenhos (
+                    id_empenho, num_empenho, orgao, fornecedor, data_iso,
+                    historico, empenhado, liquidado, gasto, row_hash
+                )
+                SELECT * FROM temp_empenhos
+                ON CONFLICT (id_empenho) DO UPDATE SET
+                    liquidado = EXCLUDED.liquidado,
+                    gasto = EXCLUDED.gasto,
+                    historico = EXCLUDED.historico,
+                    row_hash = EXCLUDED.row_hash,
+                    data_versao = NOW()
+                WHERE empenhos.row_hash IS DISTINCT FROM EXCLUDED.row_hash;
+            ]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2026-03-30T18:18:37.203+0000] {taskinstance.py:1398} INFO - Marking task as FAILED. dag_id=etl_empenhos_v3, task_id=processar_json_para_postgres, execution_date=20260329T000000, start_date=20260330T181835, end_date=20260330T181837
+[2026-03-30T18:18:37.214+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 17 for task processar_json_para_postgres ((psycopg2.errors.SyntaxError) INSERT has more expressions than target columns
+LINE 6:                 SELECT * FROM temp_empenhos
+                               ^
+
+[SQL: 
+                INSERT INTO empenhos (
+                    id_empenho, num_empenho, orgao, fornecedor, data_iso,
+                    historico, empenhado, liquidado, gasto, row_hash
+                )
+                SELECT * FROM temp_empenhos
+                ON CONFLICT (id_empenho) DO UPDATE SET
+                    liquidado = EXCLUDED.liquidado,
+                    gasto = EXCLUDED.gasto,
+                    historico = EXCLUDED.historico,
+                    row_hash = EXCLUDED.row_hash,
+                    data_versao = NOW()
+                WHERE empenhos.row_hash IS DISTINCT FROM EXCLUDED.row_hash;
+            ]
+(Background on this error at: https://sqlalche.me/e/14/f405); 1281)
+[2026-03-30T18:18:37.233+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2026-03-30T18:18:37.254+0000] {taskinstance.py:2776} INFO - 0 downstream tasks scheduled from follow-on schedule check

@@ -1,16 +1,15 @@
 from airflow import DAG
-from airflow.ops.python import PythonOperator
+from airflow.operators.python import PythonOperator # CORRIGIDO AQUI
 from datetime import datetime, timedelta
 import requests
 import json
-import time
 import os
 
 # Configurações padrão
 default_args = {
     'owner': 'Lucas Toni',
     'depends_on_past': False,
-    'start_date': datetime(2026, 1, 1),
+    'start_date': datetime(2023, 1, 1), # Data no passado para permitir execução manual
     'email_on_failure': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
@@ -38,8 +37,7 @@ def extrair_json_bruto(ano_id, inicio, fim, limit="-1"):
 
     # No Docker, usamos o caminho absoluto mapeado no volume
     data_dir = "/opt/airflow/data"
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
+    os.makedirs(data_dir, exist_ok=True)
 
     try:
         print(f"📥 Extraindo: Ano ID {ano_id} [{inicio} a {fim}]")
@@ -64,26 +62,24 @@ def extrair_json_bruto(ano_id, inicio, fim, limit="-1"):
         
     except Exception as e:
         print(f"❌ Falha na extração: {e}")
-        raise  # Força a falha da Task no Airflow para retry
+        raise 
 
 # Definição da DAG
 with DAG(
-    'extracao_transparencia_macapa',
+    'extracao_transparencia',
     default_args=default_args,
     description='Extrai dados brutos da API de transparência',
-    schedule_interval=None, # Rodar manualmente ou definir ex: '@daily'
+    schedule=None, # Mudado de schedule_interval para schedule
     catchup=False,
-    tags=['scraping', 'macapa'],
+    tags=['scraping', 'portal_transparencia'],
 ) as dag:
 
-    # Lista de períodos conforme seu script original
     periodos = [
         {"ano_id": 3, "inicio": "01/01/2023", "fim": "31/12/2023"},
         {"ano_id": 1, "inicio": "01/01/2024", "fim": "31/12/2024"},
         {"ano_id": 2, "inicio": "01/01/2025", "fim": "31/12/2025"}
     ]
 
-    # Criando as tasks dinamicamente
     for p in periodos:
         task_id = f"extrair_{p['inicio'].replace('/', '_')}"
         
