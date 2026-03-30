@@ -119,7 +119,8 @@ def extrair_json_bruto(ano_id, inicio, fim, limit="-1"):
 
         inicio_fmt = inicio.replace('/', '-')
         fim_fmt = fim.replace('/', '-')
-        filename = f"raw_empenhos_{inicio_fmt}_{fim_fmt}.json"
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"raw_empenhos_{inicio_fmt}_{fim_fmt}_ref_{timestamp}.json"
         filepath = os.path.join(data_dir, filename)
         
         with open(filepath, 'w', encoding='utf-8') as f:
@@ -131,7 +132,7 @@ def extrair_json_bruto(ano_id, inicio, fim, limit="-1"):
             nome_arquivo=filename,
             checksum_md5=checksum_md5,
             tamanho_bytes=tamanho_bytes,
-            periodo_referencia=inicio_fmt,
+            periodo_referencia=f"{inicio_fmt}_{fim_fmt}",
         )
             
         print(
