@@ -49,7 +49,7 @@ A api entrega todos os dados de uma só vez não tive problemas de baixar todo o
 
 ---
 
-
+### Respostas Geral
 
 2. O site usa renderização client-side ou server-side? Como você descobriu isso?
 Server-Side
