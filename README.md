@@ -42,10 +42,11 @@ Os testes foram realizados em diferentes máquinas e períodos, confirmando aces
 
 --- 
 
-### 5. Volume estumado
+### 5. Volume estimado
 
 Qual o volume estimado de registros? A API retorna todos de uma vez ou em lotes?
 A api entrega todos os dados de uma só vez não tive problemas de baixar todo o lote em horario comercial.
+
 ---
 
 
