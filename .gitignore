@@ -1,57 +1,79 @@
-=========================
-Python
-=========================
+# =========================
+# Estrutura de Pastas (Keep Empty)
+# =========================
+# Mantém as pastas no Git, mas ignora todo o conteúdo interno
+# Importante: Crie um arquivo .gitkeep dentro de cada uma delas
+data/*
+!data/.gitkeep
 
-pycache/
-*.pyc
-*.pyo
+logs/*
+!logs/.gitkeep
+
+# =========================
+# Python & Ambiente Virtual
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 *.pyd
 *.swp
 *.tmp
 *.log
 
-Virtualenv
-
+# Ambientes virtuais
 venv/
 .env/
+env/
+ENV/
+.venv/
+
+# Configurações de ambiente (Sensitive Data)
+.env
 .env.*
+!.env.example
 
-=========================
-Airflow
-=========================
-
-logs/
+# =========================
+# Airflow
+# =========================
 airflow.db
 *.pid
+airflow-webserver.err
+airflow-webserver.out
+airflow-webserver.log
+airflow-scheduler.err
+airflow-scheduler.out
+airflow-scheduler.log
 
-=========================
-Dados (ETL)
-=========================
-
-data/
+# =========================
+# Dados (ETL)
+# =========================
 *.csv
 *.json
 *.parquet
+*.sql
+*.gz
+*.zip
 
-=========================
-Docker
-=========================
-
-*.env
+# =========================
+# Docker
+# =========================
 docker-compose.override.yml
+.dockerignore
 
-=========================
-IDE / Sistema
-=========================
-
+# =========================
+# IDE / Sistema
+# =========================
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+desktop.ini
 
-=========================
-Scripts temporários
-=========================
-
+# =========================
+# Scripts e Backups
+# =========================
 *.bak
 *.old
+*.tmp
+temp/
