@@ -85,27 +85,6 @@ CREATE TABLE IF NOT EXISTS raw.controle_arquivos (
     periodo_referencia TEXT
 );
 
-ALTER TABLE raw.controle_arquivos
-    ADD COLUMN IF NOT EXISTS tamanho_bytes BIGINT;
-
-ALTER TABLE raw.controle_arquivos
-    ADD COLUMN IF NOT EXISTS data_processamento TIMESTAMP;
-
-ALTER TABLE raw.controle_arquivos
-    ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'pendente';
-
-ALTER TABLE raw.controle_arquivos
-    ADD COLUMN IF NOT EXISTS mensagem_erro TEXT;
-
-ALTER TABLE raw.controle_arquivos
-    ADD COLUMN IF NOT EXISTS linhas_carregadas INTEGER;
-
-ALTER TABLE raw.controle_arquivos
-    ADD COLUMN IF NOT EXISTS periodo_referencia TEXT;
-
-ALTER TABLE raw.controle_arquivos
-    ALTER COLUMN periodo_referencia TYPE TEXT;
-
 CREATE INDEX IF NOT EXISTS idx_controle_processado_extracao
     ON raw.controle_arquivos (processado, data_extracao DESC);
 
