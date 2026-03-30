@@ -30,3 +30,6 @@ airflow connections add 'postgres_transparencia' \
     --conn-host 'postgres' \
     --conn-port '5432' \
     --conn-schema 'transparencia'
+
+
+    docker exec -i arquivos-postgres-1 psql -U airflow -d transparencia < init_db.sql 

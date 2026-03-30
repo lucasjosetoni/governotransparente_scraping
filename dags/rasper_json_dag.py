@@ -4,6 +4,73 @@ from datetime import datetime, timedelta
 import requests
 import json
 import os
+import hashlib
+
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+
+POSTGRES_CONN_ID = "postgres_transparencia"
+
+
+def calcular_md5(filepath):
+    hash_md5 = hashlib.md5()
+    with open(filepath, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
+
+def registrar_arquivo_no_banco(nome_arquivo, checksum_md5, tamanho_bytes, periodo_referencia):
+    pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID)
+    sql = """
+        INSERT INTO raw.controle_arquivos (
+            nome_arquivo,
+            checksum_md5,
+            tamanho_bytes,
+            data_extracao,
+            processado,
+            status,
+            periodo_referencia
+        )
+        VALUES (
+            %(nome_arquivo)s,
+            %(checksum_md5)s,
+            %(tamanho_bytes)s,
+            NOW(),
+            FALSE,
+            'pendente',
+            %(periodo_referencia)s
+        )
+        ON CONFLICT (nome_arquivo) DO UPDATE SET
+            checksum_md5 = EXCLUDED.checksum_md5,
+            tamanho_bytes = EXCLUDED.tamanho_bytes,
+            data_extracao = NOW(),
+            periodo_referencia = EXCLUDED.periodo_referencia,
+            status = CASE
+                WHEN raw.controle_arquivos.checksum_md5 = EXCLUDED.checksum_md5
+                    THEN raw.controle_arquivos.status
+                ELSE 'pendente'
+            END,
+            processado = CASE
+                WHEN raw.controle_arquivos.checksum_md5 = EXCLUDED.checksum_md5
+                    THEN raw.controle_arquivos.processado
+                ELSE FALSE
+            END,
+            mensagem_erro = CASE
+                WHEN raw.controle_arquivos.checksum_md5 = EXCLUDED.checksum_md5
+                    THEN raw.controle_arquivos.mensagem_erro
+                ELSE NULL
+            END;
+    """
+
+    pg_hook.run(
+        sql,
+        parameters={
+            "nome_arquivo": nome_arquivo,
+            "checksum_md5": checksum_md5,
+            "tamanho_bytes": tamanho_bytes,
+            "periodo_referencia": periodo_referencia,
+        },
+    )
 
 # Configurações padrão
 default_args = {
@@ -50,15 +117,27 @@ def extrair_json_bruto(ano_id, inicio, fim, limit="-1"):
             print(f"⚠️ Aviso: Nenhum dado retornado.")
             return
 
-        # Nome do arquivo usando o início do período
-        sufixo = inicio.replace('/', '-')
-        filename = f"raw_empenhos_{sufixo}.json"
+        inicio_fmt = inicio.replace('/', '-')
+        fim_fmt = fim.replace('/', '-')
+        filename = f"raw_empenhos_{inicio_fmt}_{fim_fmt}.json"
         filepath = os.path.join(data_dir, filename)
         
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(dados, f, ensure_ascii=False, indent=4)
+
+        checksum_md5 = calcular_md5(filepath)
+        tamanho_bytes = os.path.getsize(filepath)
+        registrar_arquivo_no_banco(
+            nome_arquivo=filename,
+            checksum_md5=checksum_md5,
+            tamanho_bytes=tamanho_bytes,
+            periodo_referencia=inicio_fmt,
+        )
             
-        print(f"✅ Arquivo salvo em: {filepath} ({len(dados)} registros)")
+        print(
+            f"✅ Arquivo salvo em: {filepath} ({len(dados)} registros) | "
+            f"MD5: {checksum_md5}"
+        )
         
     except Exception as e:
         print(f"❌ Falha na extração: {e}")
@@ -66,7 +145,7 @@ def extrair_json_bruto(ano_id, inicio, fim, limit="-1"):
 
 # Definição da DAG
 with DAG(
-    'extracao_transparencia',
+    'extracao_transparencia_v1',
     default_args=default_args,
     description='Extrai dados brutos da API de transparência',
     schedule=None, # Mudado de schedule_interval para schedule
