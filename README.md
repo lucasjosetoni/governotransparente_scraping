@@ -1,8 +1,90 @@
-# Projeto ETL de Empenhos - Airflow + PostgreSQL
+# Fase 0 - Obrigatório  
+## Análise e Reconhecimento do Alvo
 
-Este projeto extrai dados de empenhos de um portal de transparencia, registra metadados de arquivos brutos para controle de processamento e carrega os dados tratados em um esquema analitico no PostgreSQL.
+Antes de escrever qualquer código de coleta, foram realizadas as seguintes análises sobre a página:
+
+---
+
+### 1. Tipo de Renderização
+
+O conteúdo analisado é entregue via **Server-Side Rendering (SSR)**.  
+Não foram identificados padrões típicos de aplicações SPA como React ou Angular.
+
+---
+
+### 2. Existência de API
+
+Foi identificado um endpoint que retorna dados em formato **JSON**.  
+Tudo indica que essa API é utilizada pelo próprio frontend e possivelmente foi projetada para facilitar o consumo por terceiros.
+
+---
+
+### 3. Paginação dos Dados
+
+Os dados são paginados.
+
+- O mecanismo padrão ocorre via chamadas adicionais feitas com **jQuery**, provavelmente utilizando parâmetros na query string.
+- Foi identificado que a API aceita o parâmetro:
+
+```bash
+"limit": "-1"
+
+4. Autenticação e Segurança
+
+Não foram identificados mecanismos de autenticação obrigatórios:
+Sem necessidade de headers de autenticação
+Sem tokens CSRF
+Sem dependência de cookies de sessão
+
+Os testes foram realizados em diferentes máquinas e períodos, confirmando acesso aberto.
+
+5. Qual o volume estimado de registros? A API retorna todos de uma vez
+ou em lotes? 
+A api entrega todos os dados de uma só vez não tive problemas de baixar todo o lote em horario comercial.
+
+
+
+O site usa renderização client-side ou server-side? Como você descobriu isso?
+Server-Side
+Através da ferramenta Burp Requeste e interpretando a resposta 
+
+Você encontrou uma API JSON direta? Se sim, qual endpoint e qual
+estrutura de resposta?
+Sim encontrei: https://governotransparente.com.br/app/portal/api/v1/json/despesa/consolidada/empenho/03769490
+
+    {
+        "empenhado": 82645.29,
+        "idEmpenho": 73623,
+        "liquidado": 82645.29,
+        "gasto": 82645.29,
+        "empenho": "02010002",
+        "orgao": "Prefeitura Municipal de Macapá",
+        "fornecedor": "CAIXA ECONÔMICA FEDERAL",
+        "data": "2023-01-02",
+        "historico": "TARIFAS BANCÁRIAS CAIXA ECONOMICA",
+        "dataDesc": "02/01/2023",
+        "empenhadoDesc": "82.645,29",
+        "liquidadoDesc": "82.645,29",
+        "gastoDesc": "82.645,29"
+    },
+
+Por que escolheu a tecnologia de scraping que usou? Quais alternativas considerou?
+Inicialmente, realizei testes utilizando parsing do DOM para extração dos dados. No entanto, ao identificar que a aplicação disponibiliza um endpoint que retorna os dados em formato JSON, optei por abandonar essa abordagem.
+
+A partir dessa descoberta, passei a consumir diretamente a API, implementando uma solução mais otimizada, robusta e eficiente, eliminando a necessidade de parsing de HTML e reduzindo a complexidade do processo de extração.
+
+Como você trataria a atualização incremental dos dados (não recotar
+tudo do zero)?
+
+Inicialmente, adotei a abordagem de manter os dados em formato JSON. Em seguida, implementei um processo de análise baseado em hash do Json de cada linha e do próprio arquivo json.
+
 
 ## Visao Geral
+
+
+# Projeto ETL de Empenhos - Airflow + PostgreSQL
+Este projeto extrai dados de empenhos de um portal de transparencia, registra metadados de arquivos brutos para controle de processamento e carrega os dados tratados em um esquema analitico no PostgreSQL.
+
 
 Fluxo principal:
 
@@ -95,9 +177,18 @@ docker exec -i arquivos-postgres-1 psql -U airflow -d transparencia < sql/init_d
 
 ## Configurando Conexao no Airflow
 
-Crie a conexao postgres_transparencia dentro de um container Airflow:
+Crie a conexao postgres_transparencia dentro de um container Airflow com suas credenciais:
 
-docker exec -it $(docker ps -qf "name=airflow-worker|airflow-scheduler" | head -n 1) \
+docker exec -it airflow_webserver_1
+airflow connections add 'postgres_transparencia' \
+    --conn-type 'postgres' \
+    --conn-login 'airflow' \ 
+    --conn-password 'airflow' \
+    --conn-host 'postgres' \
+    --conn-port '5432' \
+    --conn-schema 'transparencia'
+
+docker exec -it arquivos-airflow-scheduler-1
 airflow connections add 'postgres_transparencia' \
     --conn-type 'postgres' \
     --conn-login 'airflow' \
