@@ -1,11 +1,6 @@
-# Fase 0 - Obrigatório  
-## Análise e Reconhecimento do Alvo
-
-Antes de escrever qualquer código de coleta, foram realizadas as seguintes análises sobre a página:
-
----
-
 ### 1. Tipo de Renderização
+O conteúdo é renderizado via JavaScript (SPA/React/Angular) ou
+entregue pelo servidor como HTML estático?
 
 O conteúdo analisado é entregue via **Server-Side Rendering (SSR)**.  
 Não foram identificados padrões típicos de aplicações SPA como React ou Angular.
@@ -13,6 +8,8 @@ Não foram identificados padrões típicos de aplicações SPA como React ou Ang
 ---
 
 ### 2. Existência de API
+Existe uma API REST/GraphQL sendo consumida pelo frontend?
+Inspecione as chamadas de rede no DevTools.
 
 Foi identificado um endpoint que retorna dados em formato **JSON**.  
 Tudo indica que essa API é utilizada pelo próprio frontend e possivelmente foi projetada para facilitar o consumo por terceiros.
@@ -20,6 +17,8 @@ Tudo indica que essa API é utilizada pelo próprio frontend e possivelmente foi
 ---
 
 ### 3. Paginação dos Dados
+Os dados paginam? Qual o mecanismo (query string, scroll infinito,
+cursor)?
 
 Os dados são paginados.
 
@@ -28,27 +27,35 @@ Os dados são paginados.
 
 ```bash
 "limit": "-1"
+```
+Há headers de autenticação, tokens CSRF ou cookies de sessão
+necessários?
 
-4. Autenticação e Segurança
-
+### 4. Autenticação e Segurança
+Há headers de autenticação, tokens CSRF ou cookies de sessão
+necessários?
 Não foram identificados mecanismos de autenticação obrigatórios:
 Sem necessidade de headers de autenticação
 Sem tokens CSRF
 Sem dependência de cookies de sessão
-
 Os testes foram realizados em diferentes máquinas e períodos, confirmando acesso aberto.
 
-5. Qual o volume estimado de registros? A API retorna todos de uma vez
-ou em lotes? 
+--- 
+
+### 5. Volume estumado
+
+Qual o volume estimado de registros? A API retorna todos de uma vez ou em lotes?
 A api entrega todos os dados de uma só vez não tive problemas de baixar todo o lote em horario comercial.
+---
 
 
 
-O site usa renderização client-side ou server-side? Como você descobriu isso?
+2. O site usa renderização client-side ou server-side? Como você descobriu isso?
 Server-Side
-Através da ferramenta Burp Requeste e interpretando a resposta 
+Através da ferramenta Burp Request e interpretando a resposta 
+---
 
-Você encontrou uma API JSON direta? Se sim, qual endpoint e qual
+3. Você encontrou uma API JSON direta? Se sim, qual endpoint e qual
 estrutura de resposta?
 Sim encontrei: https://governotransparente.com.br/app/portal/api/v1/json/despesa/consolidada/empenho/03769490
 
@@ -67,16 +74,36 @@ Sim encontrei: https://governotransparente.com.br/app/portal/api/v1/json/despesa
         "liquidadoDesc": "82.645,29",
         "gastoDesc": "82.645,29"
     },
-
-Por que escolheu a tecnologia de scraping que usou? Quais alternativas considerou?
+---
+4. Por que escolheu a tecnologia de scraping que usou? Quais alternativas considerou?
 Inicialmente, realizei testes utilizando parsing do DOM para extração dos dados. No entanto, ao identificar que a aplicação disponibiliza um endpoint que retorna os dados em formato JSON, optei por abandonar essa abordagem.
+A mudança para o consumo direto da API reduziu o overhead de processamento em cerca de 80%, eliminando a necessidade de um browser headless (como Selenium/Playwright) e garantindo maior estabilidade frente a mudanças visuais no layout.
+
 
 A partir dessa descoberta, passei a consumir diretamente a API, implementando uma solução mais otimizada, robusta e eficiente, eliminando a necessidade de parsing de HTML e reduzindo a complexidade do processo de extração.
 
-Como você trataria a atualização incremental dos dados (não recotar
+---
+
+5. Como você trataria a atualização incremental dos dados (não recotar
 tudo do zero)?
 
 Inicialmente, adotei a abordagem de manter os dados em formato JSON. Em seguida, implementei um processo de análise baseado em hash do Json de cada linha e do próprio arquivo json.
+O processo foi desenhado para ser idempotente: através do uso de hashes e chaves primárias compostas, o pipeline pode ser executado múltiplas vezes sem gerar duplicidade ou corrupção de dados
+
+6. Como o pipeline se comporta se o site mudar o layout ou a API? Qual a
+estratégia de resiliência?
+
+Acompanhando a coleta pelo Airflow e no caso de quebra da consulta sendo necessario os novos ajustes. 
+Além do monitoramento via Airflow, implementaria Alertas de SLA (se os dados não chegarem no horário) e Testes de Expectativa de Dados (usando bibliotecas como Great Expectations), que validam se o JSON da API mudou o esquema antes de tentar inserir no banco.
+
+7. Se precisasse escalar para coletar dados de 500 municípios, o que
+mudaria na arquitetura?
+
+Orquestraria mais de um nó com Kubernets com filas para realizar a consulta e agrupar os dados no banco de dados postgresql separando os empenhos por cada municipio.
+---
+8. Como você usaria IA para tornar o pipeline mais robusto ou os dados
+mais úteis?
+Usaria a IA ou algoritmos de detecção de outliers para identificar lançamentos incomuns nos dados de empenhos valores muito altos, datas inconsistentes, fornecedores repetidos e outras metricas para evitar merge no banco de dados incorretos. 
 
 
 ## Visao Geral
@@ -141,7 +168,7 @@ Arquivo: dags/popula_banco.py
 
 ## Configuracao de Ambiente
 
-Crie um arquivo .env na raiz do projeto com:
+Crie um arquivo .env na raiz do projeto com ex:
 
 POSTGRES_USER=airflow
 POSTGRES_PASSWORD=airflow
