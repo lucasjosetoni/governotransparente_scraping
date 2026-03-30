@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS raw.controle_arquivos (
     status VARCHAR(20) DEFAULT 'pendente',
     mensagem_erro TEXT,
     linhas_carregadas INTEGER,
-    periodo_referencia VARCHAR(20)
+    periodo_referencia TEXT
 );
 
 ALTER TABLE raw.controle_arquivos
@@ -101,7 +101,10 @@ ALTER TABLE raw.controle_arquivos
     ADD COLUMN IF NOT EXISTS linhas_carregadas INTEGER;
 
 ALTER TABLE raw.controle_arquivos
-    ADD COLUMN IF NOT EXISTS periodo_referencia VARCHAR(20);
+    ADD COLUMN IF NOT EXISTS periodo_referencia TEXT;
+
+ALTER TABLE raw.controle_arquivos
+    ALTER COLUMN periodo_referencia TYPE TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_controle_processado_extracao
     ON raw.controle_arquivos (processado, data_extracao DESC);

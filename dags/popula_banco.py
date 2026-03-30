@@ -33,6 +33,37 @@ def listar_arquivos_pendentes(pg_hook):
         ORDER BY data_extracao ASC
     """)
 
+
+def extrair_periodo_referencia(nome_arquivo):
+    base = nome_arquivo.replace("raw_empenhos_", "").replace(".json", "")
+
+    if "_ref_" in base:
+        base = base.split("_ref_", 1)[0]
+
+    partes = base.split("_")
+    if len(partes) >= 2:
+        return f"{partes[-2]}_{partes[-1]}"
+
+    return None
+
+
+def obter_checksum_ultimo_processado(pg_hook, periodo_referencia, nome_arquivo_atual):
+    return pg_hook.get_first(
+        """
+        SELECT checksum_md5
+        FROM raw.controle_arquivos
+        WHERE periodo_referencia = %(periodo_referencia)s
+          AND processado = TRUE
+          AND nome_arquivo <> %(nome_arquivo_atual)s
+        ORDER BY COALESCE(data_processamento, data_extracao) DESC
+        LIMIT 1
+        """,
+        parameters={
+            "periodo_referencia": periodo_referencia,
+            "nome_arquivo_atual": nome_arquivo_atual,
+        },
+    )
+
 # --- TASKS ---
 
 def check_for_changes(**kwargs):
@@ -69,6 +100,21 @@ def processar_json_para_postgres(**kwargs):
         print(f"📂 Processando: {arquivo}")
 
         nome_arquivo = os.path.basename(arquivo)
+        periodo_referencia = extrair_periodo_referencia(nome_arquivo)
+
+        if not periodo_referencia:
+            with engine.begin() as conn:
+                conn.execute(text("""
+                    UPDATE raw.controle_arquivos
+                    SET status = 'erro',
+                        mensagem_erro = :mensagem
+                    WHERE nome_arquivo = :nome_arquivo
+                """), {
+                    "nome_arquivo": nome_arquivo,
+                    "mensagem": "Nao foi possivel extrair periodo_referencia do nome do arquivo.",
+                })
+            print(f"❌ Nome de arquivo fora do padrão: {nome_arquivo}")
+            continue
 
         if not os.path.exists(arquivo):
             with engine.begin() as conn:
@@ -85,26 +131,29 @@ def processar_json_para_postgres(**kwargs):
             continue
 
         checksum_arquivo = calcular_checksum(arquivo)
-        checksum_registrado = pg_hook.get_first("""
-            SELECT checksum_md5
-            FROM raw.controle_arquivos
-            WHERE nome_arquivo = %(nome_arquivo)s
-        """, parameters={"nome_arquivo": nome_arquivo})
+        ultimo_processado = obter_checksum_ultimo_processado(
+            pg_hook,
+            periodo_referencia,
+            nome_arquivo,
+        )
 
-        if not checksum_registrado or checksum_arquivo != checksum_registrado[0]:
+        if ultimo_processado and checksum_arquivo == ultimo_processado[0]:
             with engine.begin() as conn:
                 conn.execute(text("""
                     UPDATE raw.controle_arquivos
-                    SET checksum_md5 = :checksum_md5,
-                        processado = FALSE,
-                        status = 'pendente',
-                        mensagem_erro = NULL,
-                        data_extracao = NOW()
+                    SET processado = TRUE,
+                        status = 'sucesso',
+                        linhas_carregadas = 0,
+                        data_processamento = NOW(),
+                        mensagem_erro = NULL
                     WHERE nome_arquivo = :nome_arquivo
-                """), {
-                    "nome_arquivo": nome_arquivo,
-                    "checksum_md5": checksum_arquivo,
-                })
+                """), {"nome_arquivo": nome_arquivo})
+
+            print(
+                f"✅ Sem mudanças para o período {periodo_referencia}. "
+                "Carga ignorada."
+            )
+            continue
 
         with engine.begin() as conn:
             conn.execute(text("""
@@ -252,7 +301,7 @@ def processar_json_para_postgres(**kwargs):
 
 # --- DAG ---
 with DAG(
-    dag_id='etl_empenhos',
+    dag_id='etl_empenhos_v1',
     start_date=datetime(2023, 1, 1),
     schedule='@daily',
     catchup=False,
