@@ -204,7 +204,11 @@ docker exec -i arquivos-postgres-1 psql -U airflow -d transparencia < sql/init_d
 
 ## Configurando Conexao no Airflow
 
-Crie a conexao postgres_transparencia dentro de um container Airflow com suas credenciais:
+Com o docker-compose atual, a conexao postgres_transparencia e criada automaticamente via variavel de ambiente:
+
+AIRFLOW_CONN_POSTGRES_TRANSPARENCIA=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+
+Use o comando manual abaixo apenas como fallback, caso precise recriar a conexao manualmente:
 
 docker exec -it arquivos-airflow-scheduler-1 \
 airflow connections add 'postgres_transparencia' \
@@ -230,6 +234,40 @@ airflow connections add 'postgres_transparencia' \
 
 docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/dags/rasper_json_dag.py
 docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/dags/popula_banco.py
+
+## Executando Scripts Dentro do Airflow (fornecedores e resultados)
+
+Para executar scripts Python diretamente no mesmo ambiente do Airflow (com as mesmas variaveis e rede dos containers), use o container `airflow-scheduler`.
+
+Padrao de comando:
+
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/<caminho_do_script>.py
+
+Exemplos de scripts de fornecedores:
+
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/fornecedores/00_select_fornecedores_unicos.py
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/fornecedores/01_teste_gemini_primeira_linha.py
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/fornecedores/02_consultar_cnpj_brasilapi.py
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/fornecedores/03_persistir_fornecedores_enriquecidos.py
+
+Exemplos de scripts de view:
+
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/view/consultar_empenhos_preenchidos.py
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/view/consultar_fornecedores_enriquecidos.py
+docker exec -it arquivos-airflow-scheduler-1 python /opt/airflow/scripts/view/consultar_empresas_saldo_positivo.py
+
+Onde ficam os arquivos exportados dos scripts de view:
+
+- Dentro do container: `/opt/airflow/scripts/view/output`
+- Na maquina local (via volume): `scripts/view/output`
+
+Observacoes:
+
+- Se alterar variaveis de ambiente no `.env` ou no `docker-compose.yaml`, recrie os servicos para aplicar:
+
+docker compose up -d --force-recreate airflow-init airflow-webserver airflow-scheduler
+
+- Se o script depender de estruturas de banco recem-criadas, garanta que os SQLs de inicializacao foram aplicados.
 
 ## Validacao Rapida
 

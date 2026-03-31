@@ -27,6 +27,14 @@ venv/
 env/
 ENV/
 .venv/
+**/venv/
+**/.venv/
+**/env/
+**/ENV/
+
+# Cache Python em qualquer pasta
+**/__pycache__/
+*.pyc
 
 # Configurações de ambiente (Sensitive Data)
 .env

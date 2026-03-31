@@ -1,9 +1,39 @@
 version: '3.8'
 
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.7.1-python3.10
+  env_file:
+    - .env
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+    AIRFLOW_CONN_POSTGRES_TRANSPARENCIA: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY}
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "True"
+    AIRFLOW_UID: ${AIRFLOW_UID}
+    DB_HOST: postgres
+    DB_PORT: "5432"
+    DB_NAME: ${POSTGRES_DB}
+    DB_USER: ${POSTGRES_USER}
+    DB_PASSWORD: ${POSTGRES_PASSWORD}
+    _PIP_ADDITIONAL_REQUIREMENTS: "google-genai google-generativeai python-dotenv requests psycopg2-binary"
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./scripts:/opt/airflow/scripts
+    - ./data:/opt/airflow/data
+    - airflow_logs:/opt/airflow/logs
+  user: "${AIRFLOW_UID}:0"
+  depends_on:
+    postgres:
+      condition: service_healthy
+
 services:
   postgres:
     image: postgres:15
     container_name: arquivos-postgres-1
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -12,31 +42,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./sql/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./sql:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
-
-  airflow-common: &airflow-common
-    image: apache/airflow:2.7.1-python3.10
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
-      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
-      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY}
-      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "True"
-      AIRFLOW_UID: ${AIRFLOW_UID}
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./scripts:/opt/airflow/scripts
-      - ./data:/opt/airflow/data
-      - airflow_logs:/opt/airflow/logs
-    user: "${AIRFLOW_UID}:0"
-    depends_on:
-      postgres:
-        condition: service_healthy
 
   airflow-init:
     <<: *airflow-common
