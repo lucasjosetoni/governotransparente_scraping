@@ -91,6 +91,75 @@ CREATE INDEX IF NOT EXISTS idx_controle_periodo
     ON raw.controle_arquivos (periodo_referencia);
 
 -- =============================
+-- TABELAS DE FORNECEDORES
+-- =============================
+CREATE TABLE IF NOT EXISTS raw.fornecedores_unicos (
+    fornecedor_original TEXT PRIMARY KEY,
+    fornecedor_limpo TEXT NOT NULL,
+    hash_fornecedor CHAR(64) NOT NULL,
+    atualizado_em TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_fornecedores_unicos_hash
+    ON raw.fornecedores_unicos (hash_fornecedor);
+
+CREATE TABLE IF NOT EXISTS raw.fornecedores_normalizados (
+    hash_fornecedor CHAR(64) PRIMARY KEY,
+    fornecedor_original TEXT NOT NULL,
+    fornecedor_normalizado TEXT NOT NULL,
+    grupo_deduplicacao TEXT NOT NULL,
+    cnpj_sugerido_llm VARCHAR(14),
+    confianca_llm NUMERIC(5,4),
+    modelo_llm TEXT,
+    status_normalizacao VARCHAR(50) NOT NULL DEFAULT 'pendente',
+    observacao TEXT,
+    processado_em TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_fornecedores_normalizados_status
+    ON raw.fornecedores_normalizados (status_normalizacao);
+
+CREATE INDEX IF NOT EXISTS idx_fornecedores_normalizados_cnpj
+    ON raw.fornecedores_normalizados (cnpj_sugerido_llm);
+
+CREATE TABLE IF NOT EXISTS dw.fornecedores_enriquecidos (
+    id_fornecedor BIGSERIAL PRIMARY KEY,
+    fornecedor_normalizado TEXT NOT NULL UNIQUE,
+    cnpj_sugerido_llm VARCHAR(14),
+    cnpj_validado VARCHAR(14),
+    razao_social TEXT,
+    nome_fantasia TEXT,
+    uf VARCHAR(2),
+    municipio TEXT,
+    situacao_cadastral TEXT,
+    fonte_validacao TEXT,
+    status_enriquecimento VARCHAR(50) NOT NULL,
+    confianca_llm NUMERIC(5,4),
+    atualizado_em TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_fornecedores_enriquecidos_cnpj_validado
+    ON dw.fornecedores_enriquecidos (cnpj_validado);
+
+CREATE INDEX IF NOT EXISTS idx_fornecedores_enriquecidos_status
+    ON dw.fornecedores_enriquecidos (status_enriquecimento);
+
+CREATE TABLE IF NOT EXISTS dw.fornecedor_alias (
+    fornecedor_original TEXT PRIMARY KEY,
+    hash_fornecedor CHAR(64) NOT NULL,
+    fornecedor_normalizado TEXT NOT NULL,
+    id_fornecedor BIGINT REFERENCES dw.fornecedores_enriquecidos(id_fornecedor),
+    atualizado_em TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_fornecedor_alias_hash
+    ON dw.fornecedor_alias (hash_fornecedor);
+
+CREATE INDEX IF NOT EXISTS idx_fornecedor_alias_id_fornecedor
+    ON dw.fornecedor_alias (id_fornecedor);
+
+-- =============================
 -- BOAS PRÁTICAS (opcional)
 -- =============================
 
@@ -102,66 +171,3 @@ CREATE INDEX IF NOT EXISTS idx_controle_periodo
 -- =============================
 -- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA raw TO airflow;
 -- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA dw TO airflow;
-
--- =============================
--- FORNECEDORES (ENRIQUECIMENTO)
--- =============================
-
-CREATE TABLE IF NOT EXISTS raw.fornecedores_unicos (
-    id_fornecedor_unico BIGSERIAL PRIMARY KEY,
-    fornecedor_original TEXT NOT NULL UNIQUE,
-    fornecedor_limpo TEXT NOT NULL,
-    hash_fornecedor TEXT NOT NULL,
-    criado_em TIMESTAMP DEFAULT NOW(),
-    atualizado_em TIMESTAMP DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_fornecedores_unicos_hash
-    ON raw.fornecedores_unicos (hash_fornecedor);
-
-CREATE TABLE IF NOT EXISTS raw.fornecedores_normalizados (
-    hash_fornecedor TEXT PRIMARY KEY,
-    fornecedor_original TEXT NOT NULL,
-    fornecedor_normalizado TEXT NOT NULL,
-    grupo_deduplicacao TEXT,
-    cnpj_sugerido_llm VARCHAR(14),
-    confianca_llm NUMERIC(5,2),
-    modelo_llm TEXT,
-    status_normalizacao VARCHAR(30) NOT NULL DEFAULT 'pendente',
-    observacao TEXT,
-    processado_em TIMESTAMP,
-    atualizado_em TIMESTAMP DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_fornecedores_normalizados_status
-    ON raw.fornecedores_normalizados (status_normalizacao);
-
-CREATE TABLE IF NOT EXISTS dw.fornecedores_enriquecidos (
-    id_fornecedor BIGSERIAL PRIMARY KEY,
-    fornecedor_normalizado TEXT NOT NULL UNIQUE,
-    cnpj_sugerido_llm VARCHAR(14),
-    cnpj_validado VARCHAR(14),
-    razao_social TEXT,
-    nome_fantasia TEXT,
-    uf CHAR(2),
-    municipio TEXT,
-    situacao_cadastral TEXT,
-    fonte_validacao VARCHAR(30),
-    status_enriquecimento VARCHAR(30) NOT NULL DEFAULT 'pendente',
-    confianca_llm NUMERIC(5,2),
-    atualizado_em TIMESTAMP DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_fornecedores_enriquecidos_cnpj
-    ON dw.fornecedores_enriquecidos (cnpj_validado);
-
-CREATE TABLE IF NOT EXISTS dw.fornecedor_alias (
-    fornecedor_original TEXT PRIMARY KEY,
-    hash_fornecedor TEXT NOT NULL,
-    fornecedor_normalizado TEXT NOT NULL,
-    id_fornecedor BIGINT REFERENCES dw.fornecedores_enriquecidos(id_fornecedor),
-    atualizado_em TIMESTAMP DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_fornecedor_alias_hash
-    ON dw.fornecedor_alias (hash_fornecedor);
