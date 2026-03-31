@@ -27,7 +27,7 @@ def calcular_checksum(filepath):
 
 def listar_arquivos_pendentes(pg_hook):
     return pg_hook.get_records("""
-        SELECT nome_arquivo, checksum_md5
+        SELECT nome_arquivo, checksum_md5, periodo_referencia
         FROM raw.controle_arquivos
         WHERE processado = FALSE
         ORDER BY data_extracao ASC
@@ -77,7 +77,15 @@ def check_for_changes(**kwargs):
         return False
 
     print(f"⚠️ {len(pendentes)} arquivo(s) pendente(s) para processar.")
-    kwargs['ti'].xcom_push(key='arquivos_pendentes', value=[p[0] for p in pendentes])
+    arquivos_pendentes = [
+        {
+            "nome_arquivo": p[0],
+            "checksum_md5": p[1],
+            "periodo_referencia": p[2],
+        }
+        for p in pendentes
+    ]
+    kwargs['ti'].xcom_push(key='arquivos_pendentes', value=arquivos_pendentes)
     return True
 
 def processar_json_para_postgres(**kwargs):
@@ -91,16 +99,25 @@ def processar_json_para_postgres(**kwargs):
         task_ids='check_file_changes'
     )
 
-    arquivos = [os.path.join(DATA_DIR, nome) for nome in (arquivos_pendentes or [])]
-    if not arquivos:
+    if not arquivos_pendentes:
         print("⚠️ Nenhum arquivo encontrado.")
         return
 
-    for arquivo in arquivos:
+    for pendente in arquivos_pendentes:
+        if isinstance(pendente, str):
+            nome_arquivo = pendente
+            checksum_registrado = None
+            periodo_referencia = None
+        else:
+            nome_arquivo = pendente.get("nome_arquivo")
+            checksum_registrado = pendente.get("checksum_md5")
+            periodo_referencia = pendente.get("periodo_referencia")
+
+        arquivo = os.path.join(DATA_DIR, nome_arquivo)
         print(f"📂 Processando: {arquivo}")
 
-        nome_arquivo = os.path.basename(arquivo)
-        periodo_referencia = extrair_periodo_referencia(nome_arquivo)
+        if not periodo_referencia:
+            periodo_referencia = extrair_periodo_referencia(nome_arquivo)
 
         if not periodo_referencia:
             with engine.begin() as conn:
@@ -130,7 +147,21 @@ def processar_json_para_postgres(**kwargs):
             print(f"❌ Arquivo não encontrado: {arquivo}")
             continue
 
-        checksum_arquivo = calcular_checksum(arquivo)
+        checksum_arquivo = checksum_registrado or calcular_checksum(arquivo)
+        if not checksum_arquivo:
+            with engine.begin() as conn:
+                conn.execute(text("""
+                    UPDATE raw.controle_arquivos
+                    SET status = 'erro',
+                        mensagem_erro = :mensagem
+                    WHERE nome_arquivo = :nome_arquivo
+                """), {
+                    "nome_arquivo": nome_arquivo,
+                    "mensagem": "Checksum nao disponivel na tabela e nao foi possivel calcular do arquivo.",
+                })
+            print(f"❌ Nao foi possivel obter checksum: {nome_arquivo}")
+            continue
+
         ultimo_processado = obter_checksum_ultimo_processado(
             pg_hook,
             periodo_referencia,

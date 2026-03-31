@@ -52,8 +52,7 @@ A api entrega todos os dados de uma só vez não tive problemas de baixar todo o
 ### Respostas Geral
 
 2. O site usa renderização client-side ou server-side? Como você descobriu isso?
-Server-Side
-Através da ferramenta Burp Request e interpretando a resposta 
+Server-Side, através da ferramenta Burp Request e interpretando a resposta 
 ---
 
 3. Você encontrou uma API JSON direta? Se sim, qual endpoint e qual
@@ -207,16 +206,7 @@ docker exec -i arquivos-postgres-1 psql -U airflow -d transparencia < sql/init_d
 
 Crie a conexao postgres_transparencia dentro de um container Airflow com suas credenciais:
 
-docker exec -it airflow_webserver_1
-airflow connections add 'postgres_transparencia' \
-    --conn-type 'postgres' \
-    --conn-login 'airflow' \ 
-    --conn-password 'airflow' \
-    --conn-host 'postgres' \
-    --conn-port '5432' \
-    --conn-schema 'transparencia'
-
-docker exec -it arquivos-airflow-scheduler-1
+docker exec -it arquivos-airflow-scheduler-1 \
 airflow connections add 'postgres_transparencia' \
     --conn-type 'postgres' \
     --conn-login 'airflow' \

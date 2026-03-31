@@ -15,17 +15,13 @@ CREATE SCHEMA IF NOT EXISTS dw;   -- dados tratados
 CREATE TABLE IF NOT EXISTS raw.empenhos_staging (
     id_empenho VARCHAR(50),
     num_empenho VARCHAR(50),
-
     orgao TEXT,
     fornecedor TEXT,
-
     data_iso DATE,
     historico TEXT,
-
     empenhado NUMERIC(15,2),
     liquidado NUMERIC(15,2),
     gasto NUMERIC(15,2),
-
     row_hash TEXT
 );
 

@@ -141,7 +141,7 @@ def extrair_json_bruto(ano_id, inicio, fim, limit="-1"):
         )
         
     except Exception as e:
-        print(f"❌ Falha na extração: {e}")
+        print(f"Falha na extração: {e}")
         raise 
 
 # Definição da DAG
