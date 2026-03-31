@@ -182,6 +182,11 @@ python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().
 
 ## Subindo o Ambiente
 
+```bash
+chmod 777 data logs #Necessario para subir o docker
+```
+
+
 Na raiz do projeto:
 
 docker compose up -d
@@ -194,32 +199,15 @@ Para desligar removendo volumes:
 
 docker compose down -v
 
-## Inicializacao de Banco
+## Inicializacao de Banco manual
 
-O projeto contem o script sql/init_db.sql para criar schemas e tabelas.
 
 Se necessario aplicar manualmente:
 
 docker exec -i arquivos-postgres-1 psql -U airflow -d transparencia < sql/init_db.sql
 
-## Configurando Conexao no Airflow
-
-Com o docker-compose atual, a conexao postgres_transparencia e criada automaticamente via variavel de ambiente:
-
-AIRFLOW_CONN_POSTGRES_TRANSPARENCIA=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-
-Use o comando manual abaixo apenas como fallback, caso precise recriar a conexao manualmente:
-
-docker exec -it arquivos-airflow-scheduler-1 \
-airflow connections add 'postgres_transparencia' \
-    --conn-type 'postgres' \
-    --conn-login 'airflow' \
-    --conn-password 'airflow' \
-    --conn-host 'postgres' \
-    --conn-port '5432' \
-    --conn-schema 'transparencia'
-
 ## Executando o Fluxo
+docker compose up -d
 
 ### Opcao 1: pela UI do Airflow
 
