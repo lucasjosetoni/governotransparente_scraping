@@ -1,5 +1,6 @@
 import difflib
 import time
+import json
 
 import requests
 
@@ -59,6 +60,26 @@ def query_brasilapi(cnpj):
     return response.json()
 
 
+def log_result(fornecedor_normalizado, cnpj_sugerido_llm, status, detalhes=""):
+    print(
+        f"[CNPJ] fornecedor='{fornecedor_normalizado}' | "
+        f"cnpj_sugerido='{cnpj_sugerido_llm}' | status='{status}'"
+        f"{f' | {detalhes}' if detalhes else ''}"
+    )
+
+
+def log_found_data(cnpj, payload):
+    preview = {
+        "cnpj": cnpj,
+        "razao_social": payload.get("razao_social"),
+        "nome_fantasia": payload.get("nome_fantasia"),
+        "uf": payload.get("uf"),
+        "municipio": payload.get("municipio"),
+        "situacao_cadastral": payload.get("descricao_situacao_cadastral"),
+    }
+    print(f"[CNPJ_ENCONTRADO] {json.dumps(preview, ensure_ascii=False)}")
+
+
 def main():
     conn = get_db_conn()
     checked = 0
@@ -73,6 +94,12 @@ def main():
                     checked += 1
                     cnpj = only_digits(cnpj_sugerido_llm)
                     if len(cnpj) != 14:
+                        log_result(
+                            fornecedor_normalizado,
+                            cnpj_sugerido_llm,
+                            "sem_cnpj_sugerido",
+                            "cnpj ausente ou invalido",
+                        )
                         cur.execute(
                             UPSERT_SQL,
                             (
@@ -94,6 +121,12 @@ def main():
                     try:
                         payload = query_brasilapi(cnpj)
                         if payload is None:
+                            log_result(
+                                fornecedor_normalizado,
+                                cnpj_sugerido_llm,
+                                "nao_encontrado",
+                                "brasilapi retornou 404",
+                            )
                             cur.execute(
                                 UPSERT_SQL,
                                 (
@@ -112,6 +145,8 @@ def main():
                             )
                             continue
 
+                        log_found_data(cnpj, payload)
+
                         razao_social = payload.get("razao_social")
                         nome_fantasia = payload.get("nome_fantasia")
                         match_score = score_name_match(
@@ -124,6 +159,17 @@ def main():
                         cnpj_validado = cnpj if status == "validado" else None
                         if status == "validado":
                             success += 1
+
+                        log_result(
+                            fornecedor_normalizado,
+                            cnpj_sugerido_llm,
+                            status,
+                            (
+                                f"score={match_score:.3f} | "
+                                f"razao_social='{razao_social}' | "
+                                f"nome_fantasia='{nome_fantasia}'"
+                            ),
+                        )
 
                         cur.execute(
                             UPSERT_SQL,
@@ -143,6 +189,12 @@ def main():
                         )
 
                     except Exception as exc:
+                        log_result(
+                            fornecedor_normalizado,
+                            cnpj_sugerido_llm,
+                            "erro_api",
+                            f"erro='{str(exc)[:200]}'",
+                        )
                         cur.execute(
                             UPSERT_SQL,
                             (
